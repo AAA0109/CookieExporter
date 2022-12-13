@@ -1,6 +1,2 @@
 node_modules
 dist
-extension/manifest.json
-extension/dist
-.DS_Store
-.env
