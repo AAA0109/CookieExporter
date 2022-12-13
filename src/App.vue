@@ -18,24 +18,12 @@
 </template>
 
 <script>
-import { domIsReady, getCookies, loadCookies, clearCookies, getTabId } from './utils/chrome'
-import SearchTerm from './components/SearchTerm.vue'
-import SetGoogleBackground from './components/SetGoogleBackground.vue'
-
-import { generateMessage } from './utils/message'
-import { sendMessage, downloadJSON } from './utils/chrome'
-import { POPUP_SCRIPT_ID } from './constants/from.modules'
-import { EXPORT_COOKIE, IMPORT_COOKIE } from './constants/actions'
+import { domIsReady, getCookies, loadCookies, clearCookies, downloadJSON } from './utils/chrome'
 
 export default {
-  components: {
-    SearchTerm,
-    SetGoogleBackground,
-  },
   data() {
     return {
       domIsReady: false,
-      tabId: '',
       description: ''
     }
   },
@@ -46,7 +34,6 @@ export default {
     async awaitReady() {
       await domIsReady()
       this.domIsReady = true
-      this.tabId = await getTabId()
     },
     async exportCookie() {
       try {

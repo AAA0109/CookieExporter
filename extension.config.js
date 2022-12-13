@@ -8,13 +8,6 @@ module.exports = {
     background: {
       service_worker: 'background.js'
     },
-    content_scripts: [
-      {
-        "matches": ["<all_urls>"],
-        js: ['content.js'],
-        "all_frames": false
-      }
-    ],
     host_permissions: [
       "<all_urls>"
     ],
@@ -23,10 +16,8 @@ module.exports = {
       default_popup: 'index.html'
     },
   },
-  //setting your main,background,content or whatever files
   entry: {
     main: './src/main.js',
-    background: './src/background.js',
-    content: './src/handle-dom.js'
+    background: './src/background.js'
   }
 }
