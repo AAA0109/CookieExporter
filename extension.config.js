@@ -15,7 +15,10 @@ module.exports = {
         "all_frames": false
       }
     ],
-    permissions: ['storage', 'activeTab', 'declarativeContent', 'downloads'],
+    host_permissions: [
+      "<all_urls>"
+    ],
+    permissions: ['storage', 'activeTab', 'declarativeContent', 'downloads', 'cookies' ],
     action: {
       default_popup: 'index.html'
     },

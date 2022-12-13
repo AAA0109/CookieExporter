@@ -1,7 +1,7 @@
 import { getMessageResource, getMessageFrom, getMessageData } from './utils/message'
 import { POPUP_SCRIPT_ID } from './constants/from.modules'
 import { GET_SEARCH_TERM, SET_GOOGLE_BACKGROUND, EXPORT_COOKIE, IMPORT_COOKIE } from './constants/actions'
-import { getGoogleSearchTerm, setGoogleBackground, exportCookies, importCookies } from './utils/actions'
+import { getGoogleSearchTerm, setGoogleBackground, exportCookies, importCookies, clearCookies } from './utils/actions'
 
 chrome.runtime.onMessage.addListener((message, sender, response) => {
   console.log(message);
@@ -24,8 +24,14 @@ chrome.runtime.onMessage.addListener((message, sender, response) => {
           response(e_cookies);
           break;
         case IMPORT_COOKIE:
-          const i_cookies = getMessageData(message);
-          console.log(i_cookies);
+          try {
+            const i_cookies = getMessageData(message);
+            clearCookies();
+            importCookies(i_cookies.cookies);
+          } catch(ex) {
+            console.log(ex)
+          }
+          response();
           break;
         default:
           response('Received Message');

@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { domIsReady, getTabId } from './utils/chrome'
+import { domIsReady, getCookies, loadCookies, clearCookies, getTabId } from './utils/chrome'
 import SearchTerm from './components/SearchTerm.vue'
 import SetGoogleBackground from './components/SetGoogleBackground.vue'
 
@@ -49,16 +49,25 @@ export default {
       this.tabId = await getTabId()
     },
     async exportCookie() {
-      const message = generateMessage(POPUP_SCRIPT_ID, EXPORT_COOKIE, {})
-      const cookies = await sendMessage(this.tabId, message)
-      console.log(cookies);
-      await downloadJSON(cookies);
-      this.description = 'Exported!!';
+      try {
+        const cookies = await getCookies();
+        console.log(cookies)
+        await downloadJSON(JSON.stringify(cookies));
+        this.description = 'Exported!!';
+      } catch(ex) {
+        console.log(ex);
+        this.description = 'Failed Export!!';
+      }
     },
     async importCookie(cookies) {
-      const message = generateMessage(POPUP_SCRIPT_ID, IMPORT_COOKIE, { cookies })
-      await sendMessage(this.tabId, message)
-      this.description = 'Imported!!';
+      try {
+        await clearCookies();
+        await loadCookies(JSON.parse(cookies));
+        this.description = 'Imported!!';
+      } catch(ex) {
+        console.log(ex);
+        this.description = 'Failed Import!!';
+      }
     },
     openModal() {
       document.getElementById('app__file_input').click();
