@@ -38,7 +38,6 @@ export default {
     async exportCookie() {
       try {
         const cookies = await getCookies();
-        console.log(cookies)
         await downloadJSON(JSON.stringify(cookies));
         this.description = 'Exported!!';
       } catch(ex) {
@@ -49,7 +48,8 @@ export default {
     async importCookie(cookies) {
       try {
         await clearCookies();
-        await loadCookies(JSON.parse(cookies));
+        const data = JSON.parse(cookies);
+        await loadCookies(data);
         this.description = 'Imported!!';
       } catch(ex) {
         console.log(ex);

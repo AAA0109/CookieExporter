@@ -32,15 +32,16 @@ export const getCookies = async () => {
       let url = new URL(tabs[0].url);
       console.log(url);
       chrome.cookies.getAll({ url: url.origin }, cookies => {
-        resolve(cookies);
+        resolve({ url: url.href, cookies });
       });
     });
   })
 }
 
-export const loadCookies = async (cookies) => {
+export const loadCookies = async (data) => {
+  const cookies = data.cookies;
   return new Promise((resolve, reject) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+    chrome.tabs.query({ active: true, currentWindow: true }, async tabs => {
       if (!tabs && tabs.length < 1) return reject({})
       let url = new URL(tabs[0].url);
       console.log(cookies, url.origin)
@@ -50,7 +51,11 @@ export const loadCookies = async (cookies) => {
         delete cookies[i]['session'];
         chrome.cookies.set(cookies[i]);
       }
-      resolve();
+      setTimeout(() => {
+        chrome.tabs.update(tabs[0].id, {
+          url: data.url
+        }, () => resolve());
+      }, 100);
     });
   })
 }
