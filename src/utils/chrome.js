@@ -25,11 +25,11 @@ export const getTabId = async () => {
   })
 }
 
-export const getCookies = async () => {
+export const getCookies = async (o_url = '') => {
   return new Promise((resolve, reject) => {
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       if (!tabs && tabs.length < 1) return reject({})
-      let url = new URL(tabs[0].url);
+      let url = new URL(o_url || tabs[0].url);
       console.log(url);
       chrome.cookies.getAll({ url: url.origin }, cookies => {
         resolve({ url: url.href, cookies });
@@ -44,9 +44,10 @@ export const loadCookies = async (data) => {
     chrome.tabs.query({ active: true, currentWindow: true }, async tabs => {
       if (!tabs && tabs.length < 1) return reject({})
       let url = new URL(tabs[0].url);
+      let o_url = new URL(data.url);
       console.log(cookies, url.origin)
       for (let i = 0; i < cookies.length; i ++) {
-        cookies[i].url = url.origin;
+        cookies[i].url = o_url.origin;
         delete cookies[i]['hostOnly'];
         delete cookies[i]['session'];
         chrome.cookies.set(cookies[i]);
@@ -83,8 +84,10 @@ export const removeCookie = async cookie => {
   })
 }
 
-export const clearCookies = async () => {
-  const cookies = await getCookies();
+export const clearCookies = async (data) => {
+  const o_url = new URL(data.url);
+  const d_cookies = await getCookies(o_url.origin);
+  const cookies = d_cookies.cookies;
   for (let i = 0; i < cookies.length; i ++) {
     var cookie = cookies[i];
     cookie.url = getUrlForCookie(cookie);

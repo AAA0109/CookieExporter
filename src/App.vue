@@ -47,8 +47,8 @@ export default {
     },
     async importCookie(cookies) {
       try {
-        await clearCookies();
         const data = JSON.parse(cookies);
+        await clearCookies(data);
         await loadCookies(data);
         this.description = 'Imported!!';
       } catch(ex) {
