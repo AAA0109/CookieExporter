@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { domIsReady, getCookies, loadCookies, clearCookies, downloadJSON } from './utils/chrome'
+import { domIsReady, getCookies, loadCookies, clearCookies, downloadJSON, getTabUrl } from './utils/chrome'
 
 export default {
   data() {
@@ -37,8 +37,19 @@ export default {
     },
     async exportCookie() {
       try {
-        const cookies = await getCookies();
-        await downloadJSON(JSON.stringify(cookies));
+        const url = await getTabUrl();
+        if(!url) return;
+        let urls = [], cookieArr = [];
+        urls.push(url);
+        if (url.toLocaleLowerCase().includes('linkedin')) {
+          urls.push('https://lnkd.demdex.net');
+          urls.push('https://radar.cedexis.com');
+        }
+        for (let i = 0; i < urls.length; i ++) {
+          const cookies = await getCookies(urls[i]);
+          cookieArr.push(cookies);
+        }
+        await downloadJSON(JSON.stringify(cookieArr));
         this.description = 'Exported!!';
       } catch(ex) {
         console.log(ex);
